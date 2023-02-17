@@ -14,13 +14,16 @@ namespace SimpleShopApp.Controllers
             _context = context;
         }
 
+        // *** READ ***
         public async Task<IActionResult> Index()
         {
             var categories = await _context.Categories.ToListAsync();
+            var categoriesView = categories.Select(c => new CategoryModel { Id = c.Id, Name = c.Name });
 
-            return View(categories);
+            return View(categoriesView);
         }
 
+        // *** CREATE ***
         public IActionResult Create()
         {
             return View();
@@ -28,7 +31,7 @@ namespace SimpleShopApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Category model)
+        public async Task<IActionResult> Create(CategoryModel model)
         {
             if (ModelState.IsValid)
             {
@@ -37,15 +40,17 @@ namespace SimpleShopApp.Controllers
                     Name = model.Name
                 };
                 await _context.Categories.AddAsync(category);
-                _context.SaveChanges();
-                TempData["successMessage"]= "Category <strong>" + model.Name + "</strong> has been added.";
+                await _context.SaveChangesAsync();
+                TempData["successMessage"] = "Category <strong>" + model.Name + "</strong> has been added.";
                 return RedirectToAction("Index");
-            } else
+            }
+            else
             {
                 return View();
             }
         }
 
+        // *** DELETE ***
         [HttpGet]
         [Route("/Category/Delete/{id}")]
         public async Task<IActionResult> Delete(string id)
@@ -60,6 +65,8 @@ namespace SimpleShopApp.Controllers
             return RedirectToAction("Index");
         }
 
+        // *** UPDATE ***
+
         [HttpGet]
         [Route("/Category/Edit/{id}")]
         public async Task<IActionResult> Edit(string id)
@@ -67,22 +74,21 @@ namespace SimpleShopApp.Controllers
             var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == int.Parse(id));
             if (category != null)
             {
-                var model = new Category();
-                model.Id = category.Id;
-                model.Name = category.Name;
-                return await Task.Run(() => View("Edit", model));
+                var categoryView = new CategoryModel() { Id = category.Id, Name = category.Name };
+                return View(categoryView);
+                // return await Task.Run(() => View("Edit", model));
+
             }
             return RedirectToAction("Index");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task <IActionResult> Edit(Category model)
+        public async Task<IActionResult> Edit(CategoryModel model)
         {
             var category = await _context.Categories.FindAsync(model.Id);
             if (category != null)
             {
-                // category.Id = model.Id;
                 category.Name = model.Name;
 
                 await _context.SaveChangesAsync();
@@ -90,6 +96,5 @@ namespace SimpleShopApp.Controllers
             }
             return RedirectToAction("Index");
         }
-
     }
 }

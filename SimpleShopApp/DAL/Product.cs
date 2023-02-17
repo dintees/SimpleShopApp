@@ -24,8 +24,8 @@ namespace SimpleShopApp.Models
         [Range(0, int.MaxValue, ErrorMessage = "Quantity could not be negative")]
         public int Quantity { get; set; }
 
-        [ForeignKey("Category")]
+        [Display(Name = "Category")]
         public int CategoryId { get; set; }
-        public virtual Category Category { get; set; }
+        public Category Category { get; set; }
     }
 }

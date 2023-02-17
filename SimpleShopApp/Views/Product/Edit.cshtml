@@ -1,4 +1,4 @@
-﻿@model SimpleShopApp.Models.Product
+﻿@model SimpleShopApp.Models.ProductModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -46,7 +46,7 @@
                 </select>
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
-            <div class="form-group mt-5 mb-3">
+            <div class="form-group mt-3 mb-3">
                 <input type="submit" value="Save" class="btn btn-primary btn-sm" />
             </div>
         </form>

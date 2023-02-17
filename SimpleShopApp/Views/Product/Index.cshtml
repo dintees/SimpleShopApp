@@ -1,11 +1,30 @@
-﻿@model List<SimpleShopApp.Models.Product>
+﻿@model IEnumerable<SimpleShopApp.Models.ProductModel>
 @{
     ViewData["Title"] = "Products";
 }
 
 <a asp-controller="Product" asp-action="Create" class="btn btn-success mb-3">Add new product</a>
 
+@if (TempData["successMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @Html.Raw(TempData["successMessage"])
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
 <h2>List of products</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <form class="input-group" autocomplete="off">
+            <input type="text" name="search" placeholder="Search" class="form-control" />
+            <input type="text" name="category" placeholder="Category" class="form-control" />
+            <button class="btn btn-primary">Search</button>
+        </form>
+    </div>
+</div>
+
 <table class="table">
     <thead>
         <tr>

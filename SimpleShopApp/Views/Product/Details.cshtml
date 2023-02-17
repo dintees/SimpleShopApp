@@ -1,4 +1,4 @@
-﻿@model SimpleShopApp.Models.Product
+﻿@model SimpleShopApp.Models.ProductModel
 
 @{
     ViewData["Title"] = "Details";
@@ -35,10 +35,10 @@
             @Html.DisplayFor(model => model.Quantity)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Category)
+            @Html.DisplayNameFor(model => model.CategoryName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Category.Name)
+            @Html.DisplayFor(model => model.CategoryName)
         </dd>
     </dl>
 </div>
