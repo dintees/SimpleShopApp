@@ -16,10 +16,10 @@
 <h2>List of products</h2>
 
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-4">
         <form class="input-group" autocomplete="off">
             <input type="text" name="search" placeholder="Search" class="form-control" />
-            <input type="text" name="category" placeholder="Category" class="form-control" />
+            @*<input type="text" name="category" placeholder="Category" class="form-control" />*@
             <button class="btn btn-primary">Search</button>
         </form>
     </div>
@@ -30,7 +30,9 @@
         <tr>
             <th>ID</th>
             <th>Name</th>
+            <th>Price</th>
             <th>Quantity</th>
+            <th>Category</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -40,7 +42,9 @@
         <tr>
             <td>@product.Id</td>
             <td>@product.Name</td>
+            <td>@product.Price</td>
             <td>@product.Quantity</td>
+            <td>@product.CategoryName</td>
             <td>
                 <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="btn btn-sm btn-primary">Details</a>
                 <a asp-controller="Product" asp-action="Edit" asp-route-id="@product.Id" class="btn btn-sm btn-primary">Edit</a>

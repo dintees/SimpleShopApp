@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SimpleShopApp.DAL;
 using SimpleShopApp.Models;
@@ -8,17 +10,22 @@ namespace SimpleShopApp.Controllers
     public class CategoryController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IValidator<CategoryModel> _validator;
+        private readonly IMapper _mapper;
 
-        public CategoryController(ApplicationDbContext context)
+        public CategoryController(IValidator<CategoryModel> validator, IMapper mapper, ApplicationDbContext context)
         {
             _context = context;
+            _validator = validator;
+            _mapper = mapper;
         }
 
         // *** READ ***
         public async Task<IActionResult> Index()
         {
             var categories = await _context.Categories.ToListAsync();
-            var categoriesView = categories.Select(c => new CategoryModel { Id = c.Id, Name = c.Name });
+            // var categoriesView = categories.Select(c => new CategoryModel { Id = c.Id, Name = c.Name });
+            var categoriesView = _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryModel>>(categories);
 
             return View(categoriesView);
         }
@@ -33,12 +40,10 @@ namespace SimpleShopApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CategoryModel model)
         {
-            if (ModelState.IsValid)
+            var validation = await _validator.ValidateAsync(model);
+            if (validation.IsValid)
             {
-                var category = new Category()
-                {
-                    Name = model.Name
-                };
+                var category = new Category() { Name = model.Name };
                 await _context.Categories.AddAsync(category);
                 await _context.SaveChangesAsync();
                 TempData["successMessage"] = "Category <strong>" + model.Name + "</strong> has been added.";
@@ -46,6 +51,7 @@ namespace SimpleShopApp.Controllers
             }
             else
             {
+                validation.AddToModelState(ModelState);
                 return View();
             }
         }
@@ -74,7 +80,7 @@ namespace SimpleShopApp.Controllers
             var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == int.Parse(id));
             if (category != null)
             {
-                var categoryView = new CategoryModel() { Id = category.Id, Name = category.Name };
+                var categoryView = _mapper.Map<CategoryModel>(category);
                 return View(categoryView);
                 // return await Task.Run(() => View("Edit", model));
 
@@ -86,15 +92,23 @@ namespace SimpleShopApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(CategoryModel model)
         {
-            var category = await _context.Categories.FindAsync(model.Id);
-            if (category != null)
+            var validation = await _validator.ValidateAsync(model);
+            if (!validation.IsValid)
             {
-                category.Name = model.Name;
-
-                await _context.SaveChangesAsync();
-                TempData["successMessage"] = "Category <strong>" + category.Name + "</strong> has been edited.";
+                validation.AddToModelState(ModelState);
+                return View();
             }
-            return RedirectToAction("Index");
+            else
+            {
+                var category = await _context.Categories.FindAsync(model.Id);
+                if (category != null)
+                {
+                    category.Name = model.Name;
+                    await _context.SaveChangesAsync();
+                    TempData["successMessage"] = "Category <strong>" + category.Name + "</strong> has been edited.";
+                }
+                return RedirectToAction("Index");
+            }
         }
     }
 }

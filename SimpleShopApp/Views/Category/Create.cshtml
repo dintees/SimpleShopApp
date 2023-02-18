@@ -8,6 +8,7 @@
     <div class="col-md-5">
         @using (Html.BeginForm())
         {
+            @*@Html.ValidationSummary(false, "", new { @class = "text-danger" })*@
             @Html.AntiForgeryToken()
             @Html.LabelFor(m => m.Name)
             @Html.TextBoxFor(m => m.Name, new { @class =  "form-control" })
