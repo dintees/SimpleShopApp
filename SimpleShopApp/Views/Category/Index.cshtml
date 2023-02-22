@@ -3,7 +3,10 @@
     ViewData["Title"] = "Categories";
 }
 
-<a asp-controller="Category" asp-action="Create" class="btn btn-success mb-3">Add new category</a>
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <a asp-controller="Category" asp-action="Create" class="btn btn-success mb-3">Add new category</a>
+}
 
 @if (TempData["successMessage"] != null)
 {

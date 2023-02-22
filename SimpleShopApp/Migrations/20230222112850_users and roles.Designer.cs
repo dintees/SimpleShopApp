@@ -4,15 +4,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SimpleShopApp.DAL;
+using SimpleShopApp.Entities;
 
 #nullable disable
 
 namespace SimpleShopApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230214074255_fix product")]
-    partial class fixproduct
+    [Migration("20230222112850_users and roles")]
+    partial class usersandroles
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,7 +24,7 @@ namespace SimpleShopApp.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("SimpleShopApp.Models.CategoryModel", b =>
+            modelBuilder.Entity("SimpleShopApp.Entities.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -33,15 +33,14 @@ namespace SimpleShopApp.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Category");
+                    b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("SimpleShopApp.Models.ProductModel", b =>
+            modelBuilder.Entity("SimpleShopApp.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -53,15 +52,14 @@ namespace SimpleShopApp.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -73,9 +71,9 @@ namespace SimpleShopApp.Migrations
                     b.ToTable("Product");
                 });
 
-            modelBuilder.Entity("SimpleShopApp.Models.ProductModel", b =>
+            modelBuilder.Entity("SimpleShopApp.Entities.Product", b =>
                 {
-                    b.HasOne("SimpleShopApp.Models.CategoryModel", "Category")
+                    b.HasOne("SimpleShopApp.Entities.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)

@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SimpleShopApp.DAL;
+using SimpleShopApp.Entities;
 using SimpleShopApp.Models;
 
 namespace SimpleShopApp.Controllers
@@ -31,6 +32,7 @@ namespace SimpleShopApp.Controllers
         }
 
         // *** CREATE ***
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -52,7 +54,7 @@ namespace SimpleShopApp.Controllers
             else
             {
                 validation.AddToModelState(ModelState);
-                return View();
+                return View(model);
             }
         }
 
@@ -72,7 +74,6 @@ namespace SimpleShopApp.Controllers
         }
 
         // *** UPDATE ***
-
         [HttpGet]
         [Route("/Category/Edit/{id}")]
         public async Task<IActionResult> Edit(string id)
@@ -96,7 +97,7 @@ namespace SimpleShopApp.Controllers
             if (!validation.IsValid)
             {
                 validation.AddToModelState(ModelState);
-                return View();
+                return View(model);
             }
             else
             {

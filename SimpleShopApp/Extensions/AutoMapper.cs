@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using SimpleShopApp.Models;
-using SimpleShopApp.DAL;
+using SimpleShopApp.Entities;
 
 namespace SimpleShopApp.Extensions
 {
@@ -12,6 +12,7 @@ namespace SimpleShopApp.Extensions
             CreateMap<Product, ProductModel>()
                 .ForMember(d => d.CategoryName, s => s.MapFrom(e => e.Category.Name));
             CreateMap<ProductModel, Product>();
+            CreateMap<Role, RoleModel>();
         }
     }
 }

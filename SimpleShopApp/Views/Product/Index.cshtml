@@ -3,7 +3,10 @@
     ViewData["Title"] = "Products";
 }
 
-<a asp-controller="Product" asp-action="Create" class="btn btn-success mb-3">Add new product</a>
+@if (User.Identity?.IsAuthenticated == true) 
+{
+    <a asp-controller="Product" asp-action="Create" class="btn btn-success mb-3">Add new product</a>
+}
 
 @if (TempData["successMessage"] != null)
 {

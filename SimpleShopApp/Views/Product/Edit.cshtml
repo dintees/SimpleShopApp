@@ -37,7 +37,7 @@
                 <span asp-validation-for="Quantity" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CategoryId" class="control-label"></label>
+                <label for="CategoryId" class="control-label">Category</label>
                 <select asp-for="CategoryId" class="form-control">
                     @foreach(var category in ViewBag.categories)
                     {

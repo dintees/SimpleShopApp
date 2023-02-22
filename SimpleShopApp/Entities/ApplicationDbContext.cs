@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SimpleShopApp.Models;
 
-namespace SimpleShopApp.DAL
+namespace SimpleShopApp.Entities
 {
     public class ApplicationDbContext : DbContext
     {
@@ -9,6 +9,8 @@ namespace SimpleShopApp.DAL
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

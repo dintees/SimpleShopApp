@@ -1,0 +1,25 @@
+﻿@model SimpleShopApp.Models.UserModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h2>Login</h2>
+
+<div class="row">
+    <div class="col-md-5">
+        <form method="post">
+            <label asp-for="Username"></label>
+            <input asp-for="Username" class="form-control" />
+
+            <label asp-for="Password"></label>
+            <input type="password" asp-for="Password" class="form-control" />
+
+            <input type="submit" class="btn btn-primary mt-3" value="Login" />
+        </form>
+    </div>
+</div>
+@if (ViewBag.errorMessage != null)
+{
+    <div class="text-danger mt-2 mb-3">@ViewBag.errorMessage</div>
+}
+<a asp-action="Register">Don't have an account? Register!</a>

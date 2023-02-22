@@ -1,4 +1,4 @@
-﻿namespace SimpleShopApp.DAL
+﻿namespace SimpleShopApp.Entities
 {
     public class Product
     {

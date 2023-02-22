@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SimpleShopApp.DAL;
+using SimpleShopApp.Entities;
 using SimpleShopApp.Models;
 using FluentValidation;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SimpleShopApp.Controllers
 {
@@ -27,16 +28,16 @@ namespace SimpleShopApp.Controllers
             else { products = await _context.Products.Include(e => e.Category).ToListAsync(); }
             // if (category != null) products = products.FindAll(p => p.CategoryId == int.Parse(category));
 
-            // var productView = products.Select(p => new ProductModel() { Id = p.Id, Name = p.Name, Description = p.Description, Price = p.Price, Quantity = p.Quantity, CategoryId = p.CategoryId, CategoryName = p.Category.Name });
             var productView = _mapper.Map<IEnumerable<Product>, IEnumerable<ProductModel>>(products);
 
             return View(productView);
         }
 
         // *** CREATE ***
+        [Authorize]
         public async Task<IActionResult> Create()
         {
-            ViewBag.categories = await GetCategories();
+            ViewBag.categories = await GetCategoriesAsync();
 
             return View();
         }
@@ -45,13 +46,13 @@ namespace SimpleShopApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProductModel model)
         {
-            var result = await _validator.ValidateAsync(model);
-            if (!result.IsValid)
+            var validation = await _validator.ValidateAsync(model);
+            if (!validation.IsValid)
             {
-                result.AddToModelState(ModelState);
-                var errors = ModelState.Select(x => x.Value.Errors).Where(y => y.Count > 0).ToList();
-                ViewBag.categories = await GetCategories();
-                return View();
+                validation.AddToModelState(ModelState);
+                //  errors = ModelState.Select(x => x.Value.Errors).Where(y => y.Count > 0).ToList();
+                ViewBag.categories = await GetCategoriesAsync();
+                return View(model);
             }
             else
             {
@@ -93,7 +94,7 @@ namespace SimpleShopApp.Controllers
         {
             var product = await _context.Products.Include(e => e.Category).FirstOrDefaultAsync(p => p.Id == int.Parse(id));
             var productView = _mapper.Map<ProductModel>(product);
-            ViewBag.categories = await GetCategories();
+            ViewBag.categories = await GetCategoriesAsync();
             return View(productView);
         }
 
@@ -105,7 +106,8 @@ namespace SimpleShopApp.Controllers
             if (!validation.IsValid)
             {
                 validation.AddToModelState(ModelState);
-                return View();
+                ViewBag.categories = await GetCategoriesAsync();
+                return View(model);
             }
             else
             {
@@ -125,7 +127,7 @@ namespace SimpleShopApp.Controllers
             }
         }
 
-        private async Task<IEnumerable<CategoryModel>> GetCategories()
+        private async Task<IEnumerable<CategoryModel>> GetCategoriesAsync()
         {
             var categories = await _context.Categories.ToListAsync();
             return categories.Select(c => new CategoryModel { Id = c.Id, Name = c.Name });
